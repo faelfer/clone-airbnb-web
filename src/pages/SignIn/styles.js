@@ -23,7 +23,7 @@ export const Form = styled.form`
     margin-bottom: 15px;
     border: 1px solid #ff3333;
     padding: 10px;
-    width: 100%;
+    width: 94%;
     text-align: center;
   }
   input {
