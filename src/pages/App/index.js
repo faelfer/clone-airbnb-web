@@ -1,12 +1,15 @@
-import React, { Component } from "react";
+import React, { Component, Fragment } from "react";
+import { withRouter } from "react-router-dom";
+import { logout } from "../../services/auth";
 import Dimensions from "react-dimensions";
-import { Container } from "./styles";
+import { Container, ButtonContainer } from "./styles";
 import MapGL from "react-map-gl";
 import PropTypes from "prop-types";
 import debounce from "lodash/debounce";
 import api from "../../services/api";
 
 import Properties from "./components/Properties";
+import Button from "./components/Button";
 
 const TOKEN =
   "pk.eyJ1IjoibnlkaW5vIiwiYSI6ImNrMzV3NHdyMjFoc3Mzbm1vbGNuY2s4aWQifQ.Z4crc5NFQXEoOOdorcDSJw";
@@ -30,7 +33,8 @@ class Map extends Component {
       longitude: -49.6446024,
       zoom: 12.8,
       bearing: 0,
-      pitch: 0
+      pitch: 0,
+    
     },
     properties: []
   };
@@ -56,26 +60,44 @@ class Map extends Component {
     }
   };
 
+  handleLogout = e => {
+    logout();
+    this.props.history.push("/");
+  };
+
+  renderActions() {
+    return (
+      <ButtonContainer>
+        <Button color="#222" onClick={this.handleLogout}>
+          <i className="fa fa-times" />
+        </Button>
+      </ButtonContainer>
+    );
+  }
+
   render() {
     const { containerWidth: width, containerHeight: height } = this.props;
     const { properties } = this.state;
     return (
-      <MapGL
-        width={width}
-        height={height}
-        {...this.state.viewport}
-        mapStyle="mapbox://styles/mapbox/dark-v9"
-        mapboxApiAccessToken={TOKEN}
-        onViewportChange={viewport => this.setState({ viewport })}
-        onViewStateChange={this.updatePropertiesLocalization.bind(this)}
-      >
-        <Properties properties={properties} />
-      </MapGL>
+        <Fragment>
+            <MapGL
+                width={width}
+                height={height}
+                {...this.state.viewport}
+                mapStyle="mapbox://styles/mapbox/dark-v9"
+                mapboxApiAccessToken={TOKEN}
+                onViewportChange={viewport => this.setState({ viewport })}
+                onViewStateChange={this.updatePropertiesLocalization.bind(this)}
+            >
+                <Properties properties={properties} />
+            </MapGL>
+            {this.renderActions()}
+        </Fragment>
     );
   }
 }
 
-const DimensionedMap = Dimensions()(Map);
+const DimensionedMap = withRouter(Dimensions()(Map));
 const App = () => (
   <Container>
     <DimensionedMap />
