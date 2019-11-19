@@ -15,8 +15,8 @@ const Properties = ({ properties }) =>
   properties.map(property => (
     <Marker
       key={property.id}
-      longitude={property.longitude}
-      latitude={property.latitude}
+      longitude={parseFloat(property.longitude)}
+      latitude={parseFloat(property.latitude)}
     >
       <Pin>
         <Link to="">{intlMonetary.format(property.price)}</Link>
